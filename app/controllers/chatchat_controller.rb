@@ -1,5 +1,5 @@
 class ChatchatController < ApplicationController
-  
+  skip_forgery_protection
   def eat
     render plain: "這是 Controller"
   end
