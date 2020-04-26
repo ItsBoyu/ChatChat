@@ -21,7 +21,7 @@ class ChatchatController < ApplicationController
   }
 
     # 取得 reply token
-    reply_token = params['event'][0]['replyToken']
+    reply_token = params['events'][0]['replyToken']
 
     # 設定回覆訊息
     message = {
