@@ -40,7 +40,7 @@ class ChatchatController < ApplicationController
   end
 
   # 傳送訊息到 line
-  def reply_to_line(message)
+  def reply_to_line(reply_text)
     return nil if reply_text.nil?
 
     # 取得 reply token
@@ -49,7 +49,7 @@ class ChatchatController < ApplicationController
     # 設定回覆訊息
     message = {
       type: "text",
-      text: "我知道了！"
+      text: reply_text
     }
 
     # 傳送訊息
