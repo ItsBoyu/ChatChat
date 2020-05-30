@@ -31,7 +31,7 @@ class ChatchatController < ApplicationController
   def keyword_reply(received_text)
     # 學習記錄表
     keyword_mapping = {
-      '中島美嘉' => '神曲支援：https://www.youtube.com/watch?v=QL3T2Nzcqcs'
+      '中島美嘉' => '神曲支援：https://www.youtube.com/watch?v=QL3T2Nzcqcs',
       '女王蜂' => '神曲支援：https://www.youtube.com/watch?v=gn-YwSmEzNc'
     }
 
