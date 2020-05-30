@@ -14,6 +14,13 @@ class ChatchatController < ApplicationController
     # 關鍵字回覆
     reply_text = keyword_reply(received_text) if reply_text.nil?
 
+    # 推齊功能
+    reply_text = echo2(channel_id, received_text) if reply_text.nil?
+
+    # 記錄對話
+    save_to_received(channel_id, received_text)
+    save_to_reply(channel_id, reply_text)
+
     # 傳送訊息到 line
     response = reply_to_line(reply_text)
 
@@ -59,6 +66,36 @@ class ChatchatController < ApplicationController
     # 查表
     # keyword_mapping[received_text]
     KeywordMapping.where(keyword: received_text).last&.message
+  end
+
+  # 頻道ID
+  def channel_id
+    source = params['events'][0]['source']
+    source['groupId'] || source['roomId'] || source['userId']
+  end
+
+  # 儲存對話
+  def save_to_received(channel_id, received_text)
+    return nil if received_text.nil?
+    Received.create(channel_id: channel_id, text: received_text)
+  end
+
+  # 儲存回應
+  def save_to_reply(channel_id, reply_text)
+    return nil if reply_text.nil?
+    Reply.create(channel_id: channel_id, text: reply_text)
+  end
+
+  def echo2
+    # 如果在 channel_id 沒人講過 received_text 就不回應
+    recent_received_texts = Received.where(channel_id: channel_id).last(5)&.pluck(:text)
+    return nil unless received_text.in? recent_received_texts
+
+    # 如果在 channel_id 上一句回應是 received_text 就不回應
+    last_reply_texts = Reply.where(channel_id: channel_id).last&.text
+    return nil unless last_reply_texts == received_text
+
+    received_text
   end
 
   # 傳送訊息到 line
