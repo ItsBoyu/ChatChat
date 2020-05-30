@@ -76,13 +76,13 @@ class ChatchatController < ApplicationController
 
   # 儲存對話
   def save_to_received(channel_id, received_text)
-    return nil if received_text.nil?
+    return if received_text.nil?
     Received.create(channel_id: channel_id, text: received_text)
   end
 
   # 儲存回應
   def save_to_reply(channel_id, reply_text)
-    return nil if reply_text.nil?
+    return if reply_text.nil?
     Reply.create(channel_id: channel_id, text: reply_text)
   end
 
