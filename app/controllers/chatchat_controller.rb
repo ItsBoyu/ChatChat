@@ -25,7 +25,7 @@ class ChatchatController < ApplicationController
     # 如果開頭不是 chat學說話;
     return nil unless received_text[0..7] == "chat學說話;"
     
-    received_text = received_text[7..-1]
+    received_text = received_text[8..-1]
     semicolon_index = received_text.index(';')
 
     # 找不到分號就結束
