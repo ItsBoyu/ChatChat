@@ -8,13 +8,34 @@ class ChatchatController < ApplicationController
 
     # render plain: params
     # 設定回覆文字
-    reply_text = keyword_reply(received_text)
+    # 學說話
+    reply_text = learn(received_text)
+
+    # 關鍵字回覆
+    reply_text = keyword_reply(received_text) if reply_text.nil?
 
     # 傳送訊息到 line
     response = reply_to_line(reply_text)
 
     # 回應200
     head :ok
+  end
+
+  def learn(received_text)
+    # 如果開頭不是 chat學說話;
+    return nil unless received_text[0..7] == "chat學說話;"
+    
+    received_text = received_text[7..-1]
+    semicolon_index = received_text.index(';')
+
+    # 找不到分號就結束
+    return nil if semicolon_index.nil?
+
+    keyword = received_text[0..semicolon_index-1]
+    message = received_text[semicolon_index+1..-1]
+
+    KeywordMapping.create(keyword: keyword, message: message)
+    '我會了！'
   end
 
   # 取得對方說的話
@@ -30,13 +51,14 @@ class ChatchatController < ApplicationController
   # 關鍵字回覆
   def keyword_reply(received_text)
     # 學習記錄表
-    keyword_mapping = {
-      '中島美嘉' => '神曲支援：https://www.youtube.com/watch?v=QL3T2Nzcqcs',
-      '女王蜂' => '神曲支援：https://www.youtube.com/watch?v=gn-YwSmEzNc'
-    }
+    # keyword_mapping = {
+    #   '中島美嘉' => '神曲支援：https://www.youtube.com/watch?v=QL3T2Nzcqcs',
+    #   '女王蜂' => '神曲支援：https://www.youtube.com/watch?v=gn-YwSmEzNc'
+    # }
 
     # 查表
-    keyword_mapping[received_text]
+    # keyword_mapping[received_text]
+    KeywordMapping.where(keyword: received_text).last&.message
   end
 
   # 傳送訊息到 line
