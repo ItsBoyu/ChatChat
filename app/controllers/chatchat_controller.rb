@@ -86,7 +86,7 @@ class ChatchatController < ApplicationController
     Reply.create(channel_id: channel_id, text: reply_text)
   end
 
-  def echo2
+  def echo2(channel_id, received_text)
     # 如果在 channel_id 沒人講過 received_text 就不回應
     recent_received_texts = Received.where(channel_id: channel_id).last(5)&.pluck(:text)
     return nil unless received_text.in? recent_received_texts
