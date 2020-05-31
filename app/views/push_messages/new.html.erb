@@ -1,0 +1,4 @@
+<%= form_with url: '/push_messages', local: true do |f| %>
+  <%= text_area_tag 'text' %>
+  <%= f.submit '送出' %>
+<% end %>

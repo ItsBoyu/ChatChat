@@ -7,6 +7,9 @@ class ChatchatController < ApplicationController
     # reply_message = reply(received_message)
 
     # render plain: params
+    # 記錄頻道
+    Channel.create_or_find_by(channel_id: channel_id)
+
     # 設定回覆文字
     # 學說話
     reply_text = learn(channel_id, received_text)
