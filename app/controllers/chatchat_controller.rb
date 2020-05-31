@@ -92,8 +92,8 @@ class ChatchatController < ApplicationController
     return nil unless received_text.in? recent_received_texts
 
     # 如果在 channel_id 上一句回應是 received_text 就不回應
-    last_reply_texts = Reply.where(channel_id: channel_id).last&.text
-    return nil unless last_reply_texts == received_text
+    last_reply_text = Reply.where(channel_id: channel_id).last&.text
+    return nil if last_reply_text == received_text
 
     received_text
   end
