@@ -9,10 +9,10 @@ class ChatchatController < ApplicationController
     # render plain: params
     # 設定回覆文字
     # 學說話
-    reply_text = learn(received_text)
+    reply_text = learn(channel_id, received_text)
 
     # 關鍵字回覆
-    reply_text = keyword_reply(received_text) if reply_text.nil?
+    reply_text = keyword_reply(channel_id, received_text) if reply_text.nil?
 
     # 推齊功能
     reply_text = echo2(channel_id, received_text) if reply_text.nil?
@@ -28,7 +28,7 @@ class ChatchatController < ApplicationController
     head :ok
   end
 
-  def learn(received_text)
+  def learn(channel_id, received_text)
     # 如果開頭不是 chat學說話;
     return nil unless received_text[0..7] == "chat學說話;"
     
@@ -41,7 +41,7 @@ class ChatchatController < ApplicationController
     keyword = received_text[0..semicolon_index-1]
     message = received_text[semicolon_index+1..-1]
 
-    KeywordMapping.create(keyword: keyword, message: message)
+    KeywordMapping.create(channel_id: channel_id, keyword: keyword, message: message)
     '我會了！'
   end
 
@@ -56,7 +56,7 @@ class ChatchatController < ApplicationController
   end
 
   # 關鍵字回覆
-  def keyword_reply(received_text)
+  def keyword_reply(channel_id, received_text)
     # 學習記錄表
     # keyword_mapping = {
     #   '中島美嘉' => '神曲支援：https://www.youtube.com/watch?v=QL3T2Nzcqcs',
@@ -65,6 +65,11 @@ class ChatchatController < ApplicationController
 
     # 查表
     # keyword_mapping[received_text]
+
+    # 新增訊息
+    message = KeywordMapping.where(channel_id: channel_id, keyword: received_text).last&.message
+    return message unless message.nil?
+
     KeywordMapping.where(keyword: received_text).last&.message
   end
 
