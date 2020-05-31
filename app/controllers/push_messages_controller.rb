@@ -10,7 +10,7 @@ class PushMessagesController < ApplicationController
     Channel.all.each do |channel|
       push_to_line(channel.channel_id, text)
     end
-    redirect_to new_push_message_path
+    redirect_to '/push_messages/new'
   end
 
   private

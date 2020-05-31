@@ -8,7 +8,8 @@ class ChatchatController < ApplicationController
 
     # render plain: params
     # 記錄頻道
-    Channel.create_or_find_by(channel_id: channel_id)
+    # Channel.create_or_find_by(channel_id: channel_id)
+    Channel.find_or_create_by(channel_id: channel_id)
 
     # 設定回覆文字
     # 學說話
