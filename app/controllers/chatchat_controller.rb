@@ -129,8 +129,8 @@ class ChatchatController < ApplicationController
   def line
     # return @line if not @line.nil?
     @line ||= Line::Bot::Client.new { |config|
-      config.channel_secret = "92d001c6a3ea46401d239d1c82f1c5f6"
-      config.channel_token = "jEKnpF4gBjr11XJyVDr0+SNgCz52mC2mZKIIfedzlbfn609io61vQPCZThkEMjRK8ZmUavoi32u2wjNGNTgrgf0QsdZec1QJOZEZ63QRaWAx5xnRmg6VRRegiX1oHi1wBdJhjoWkP/xx/qCid8yOLAdB04t89/1O/w1cDnyilFU="
+      config.channel_secret = ENV["channel_secret"]
+      config.channel_token = ENV["channel_token"]
     }
   end
 
