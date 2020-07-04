@@ -1,24 +1,8 @@
-# README
+# ChatChat Chatbot
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+復刻聊天機器人卡米狗
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## 開發環境 Environment
+* Ruby：2.6.5
+* Rails：6.0.2
+* Database：postgreSQL
