@@ -7,6 +7,21 @@ class ChatchatController < ApplicationController
     # reply_message = reply(received_message)
 
     # render plain: params
+
+    # 查天氣
+    reply_image = get_weather(received_text)
+
+    # 有查到的話，後面的事情就不做了
+    unless reply_image.nil?
+      # 傳送訊息到 line
+      response = reply_image_to_line(reply_image)
+
+      # 回應200
+      head :ok
+
+      return
+    end
+
     # 記錄頻道
     # Channel.create_or_find_by(channel_id: channel_id)
     Channel.find_or_create_by(channel_id: channel_id)
@@ -30,6 +45,53 @@ class ChatchatController < ApplicationController
 
     # 回應200
     head :ok
+  end
+
+  def get_weather(received_text)
+    return nil unless received_text.include? '天氣'
+    upload_to_imgur(get_weather_from_cwb)
+  end
+
+  def get_weather_from_cwb
+    uri = URI('https://www.cwb.gov.tw/Data/js/obs_img/Observe_radar.js')
+    response = Net::HTTP.get(uri)
+    start_index = response.index('":\'') + 3
+    end_index = response.index('\',') - 1
+    'https://www.cwb.gov.tw/Data/radar/' + response[start_index..end_index]
+  end
+
+  def upload_to_imgur(img_url)
+    url = URI('https://api.imgur.com/3/image')
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(url)
+    request['authorization'] = ENV["imgur_client_id"]
+
+    request.set_form_data({'image' => img_url})
+    response = http.request(request)
+    json = JSON.parse(response.read_body)
+    begin
+      json['data']['link'].gsub('http:', 'https:')
+    rescue
+      nil
+    end
+  end
+
+  def reply_image_to_line(reply_image)
+    return nil if reply_image.nil?
+
+    # 取得 reply token
+    reply_token = params['events'][0]['replyToken']
+
+    # 設定回覆訊息
+    message = {
+      type: 'image',
+      originalContentUrl: reply_image,
+      previewImageUrl: reply_image
+    }
+
+    # 傳送訊息
+    line.reply_message(reply_token, message)
   end
 
   def learn(channel_id, received_text)
